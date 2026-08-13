@@ -1,13 +1,16 @@
-"""v3 — pillar 3: reconciliation. A working IaC tool.
+"""v4 — hard problem: dependency graphs (and eventual consistency, free).
 
-Raw Azure REST, no SDK, no frameworks: every ARM resource is just
-PUT / GET / DELETE on a resource ID. The rest is a diff loop.
+A storage account has to be created *after* its resource group, and deleted
+*before* it. So the resources are a graph, and the engine walks it in
+topological order — parents first on the way up, children first on the way down.
 
     python engine.py plan | up | destroy
 
-State, diff, reconcile. That is the whole idea, and it fits on a slide.
+The storage account also answers 202 Accepted, not 200 OK: "working on it".
+Real clouds are eventually consistent, so the engine polls until the resource
+says provisioningState: Succeeded.
 """
-import json, os, subprocess, sys, urllib.error, urllib.request
+import json, os, subprocess, sys, time, urllib.error, urllib.request
 import yaml  # the one import: infra.yaml -> dict, one line, not a pillar
 
 SUB = os.environ["AZURE_SUBSCRIPTION_ID"]
@@ -34,7 +37,32 @@ def call(method, url, body=None):
         raise SystemExit(f"{method} {url}\n  -> {err.code}: {err.read().decode()[:300]}")
 
 def url_for(res):
-    return f"{BASE}/subscriptions/{SUB}/resourcegroups/{res['name']}?api-version=2024-03-01"
+    if res["type"] == "Microsoft.Resources/resourceGroups":
+        return f"{BASE}/subscriptions/{SUB}/resourcegroups/{res['name']}?api-version=2024-03-01"
+    return (f"{BASE}/subscriptions/{SUB}/resourceGroups/{res['resourceGroup']}"
+            f"/providers/{res['type']}/{res['name']}?api-version=2023-05-01")
+
+def wait_ready(res):  # 201/202 = "working on it" — poll until the cloud is done
+    while True:
+        code, actual = call("GET", url_for(res))
+        if code != 404 and (actual or {}).get("properties", {}).get(
+                "provisioningState") == "Succeeded":
+            return
+        time.sleep(2)
+
+# ---- dependency graph: parents before children -----------------------------
+
+def ordered(resources):  # depth-first topological sort
+    done, order = set(), []
+    def visit(key):
+        if key not in done:
+            done.add(key)
+            for dep in resources[key].get("dependsOn", []):
+                visit(dep)
+            order.append(key)
+    for key in resources:
+        visit(key)
+    return order
 
 # ---- pillar 1: state — what we THINK exists --------------------------------
 
@@ -63,17 +91,20 @@ def show(creates, updates, deletes):
 # ---- pillar 3: reconciliation — make the diff true -------------------------
 
 def apply(desired, state, creates, updates, deletes):
-    for key in deletes:
-        print(f"  - {key}")
-        call("DELETE", url_for(state[key]["res"]))
-        del state[key]
-        save_state(state)               # save as we go, so partial failure
-    for key in creates + updates:       # leaves state matching reality
-        res = desired[key]
-        print(f"  {'+' if key in creates else '~'} {key}")
-        call("PUT", url_for(res), res["properties"])
-        state[key] = {"res": res, "saved": res["properties"]}
-        save_state(state)
+    for key in reversed(ordered({k: state[k]["res"] for k in state})):
+        if key in deletes:              # children first on the way down
+            print(f"  - {key}")
+            call("DELETE", url_for(state[key]["res"]))
+            del state[key]
+            save_state(state)           # save as we go, so partial failure
+    for key in ordered(desired):        # leaves state matching reality
+        if key in creates or key in updates:
+            res = desired[key]
+            print(f"  {'+' if key in creates else '~'} {key}")
+            call("PUT", url_for(res), res["properties"])
+            wait_ready(res)
+            state[key] = {"res": res, "saved": res["properties"]}
+            save_state(state)
 
 # ----------------------------------------------------------------------------
 
