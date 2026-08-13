@@ -7,14 +7,3 @@ resources:
     properties:
       location: eastus
       tags: {env: demo, talk: kcdc}
-
-  storage:
-    type: Microsoft.Storage/storageAccounts
-    name: byoiacdemo2026        # globally unique, 3-24 lowercase alnum
-    resourceGroup: byoiac-demo
-    dependsOn: [rg]             # Pulumi infers this from ${rg.name} — we can't
-    properties:
-      location: eastus
-      sku: {name: Standard_LRS}
-      kind: StorageV2
-      tags: {env: demo}

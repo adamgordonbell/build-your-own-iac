@@ -1,15 +1,15 @@
-"""v1 — pillar 1: state. What we THINK exists.
+"""v2 — pillar 2: the diff. Desired vs state.
 
-PUT is an upsert, so creating is safe. But an IaC tool has to know what it
-made, or it can never clean up after itself. So: write down what we created.
+Desired state now lives in infra.yaml, so the program is data. One
+dependency — a YAML parser — because parsing was never the interesting part.
 
-    python engine.py
+    python engine.py plan   # say what would change, touch nothing
 
-state.json is that memory. It also shows the crack: state is a *belief*.
-Rename a resource and we forget the old one. Delete it in the portal and we
-still think it's there.
+Compare desired against state and you get three sets: create, update, delete.
+That is the whole of what a progress bar is hiding from you.
 """
-import json, os, subprocess, urllib.request
+import json, os, subprocess, sys, urllib.request
+import yaml  # the one import: infra.yaml -> dict, one line, not a pillar
 
 SUB = os.environ["AZURE_SUBSCRIPTION_ID"]
 BASE = "https://management.azure.com"
@@ -38,21 +38,34 @@ def load_state():
 def save_state(state):
     json.dump(state, open(STATE_FILE, "w"), indent=2)
 
+# ---- pillar 2: the diff — desired vs state ---------------------------------
+
+def diff(desired, state):
+    creates = [k for k in desired if k not in state]
+    deletes = [k for k in state if k not in desired]
+    updates = [k for k in desired if k in state
+               and desired[k]["properties"] != state[k]["saved"]]
+    return creates, updates, deletes
+
+def show(creates, updates, deletes):
+    for k in creates: print(f"  + create {k}")
+    for k in updates: print(f"  ~ update {k}")
+    for k in deletes: print(f"  - delete {k}")
+    if not (creates or updates or deletes):
+        print("  no changes.")
+
 # ----------------------------------------------------------------------------
 
-DESIRED = {  # still hardcoded — the input language comes next
-    "rg": {"type": "Microsoft.Resources/resourceGroups", "name": "byoiac-demo",
-           "properties": {"location": "eastus", "tags": {"env": "demo", "talk": "kcdc"}}},
-}
-
 TOKEN = get_token()
+desired = yaml.safe_load(open("infra.yaml"))["resources"]
+verb = sys.argv[1] if len(sys.argv) > 1 else "plan"
 state = load_state()
 
-for key, res in DESIRED.items():
-    if key in state:
-        print(f"  = {key} already in state — skipping")
-        continue
-    print(f"  + {key} {res['name']}")
-    call("PUT", url_for(res), res["properties"])
-    state[key] = {"res": res}
-    save_state(state)
+creates, updates, deletes = diff(desired, state)
+show(creates, updates, deletes)
+
+if verb == "up":  # reconciliation is the next pillar; for now, creates only
+    for key in creates:
+        call("PUT", url_for(desired[key]), desired[key]["properties"])
+        state[key] = {"res": desired[key], "saved": desired[key]["properties"]}
+        save_state(state)
