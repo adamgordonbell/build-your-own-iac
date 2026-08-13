@@ -1,23 +1,17 @@
-"""v6 — hard problem: drift. State vs reality, now done right.
+"""Build your own IaC — the whole engine.
+
+Raw Azure REST, no SDK, no frameworks: every ARM resource is just
+PUT / GET / DELETE on a resource ID. The rest is a diff loop. One dependency,
+a YAML parser, because parsing was never the interesting part.
 
     python engine.py plan | up | destroy | refresh
-
-Normalization (v5) is what makes drift detection possible at all: now that
-`refresh` can tell OUR fields from the cloud's, the answers it brings back
-mean something. Two kinds of drift, both handled here:
-
-  changed — someone edited a tag in the portal; refresh sees it, plan says ~
-  vanished — someone deleted the resource; refresh forgets it, plan says +
-
-Without v5's OWNED, every refresh would report drift on 44 fields nobody
-touched, and the signal would be buried in the noise.
 """
 import json, os, subprocess, sys, time, urllib.error, urllib.request
 import yaml  # the one import: infra.yaml -> dict, one line, not a pillar
 
 SUB = os.environ["AZURE_SUBSCRIPTION_ID"]
 BASE = "https://management.azure.com"
-STATE_FILE = "state.json"
+STATE_FILE, LOCK_FILE = "state.json", "state.lock"
 
 # ---- the cloud is just a REST API ------------------------------------------
 
@@ -47,8 +41,7 @@ def url_for(res):
 def wait_ready(res):  # 201/202 = "working on it" — poll until the cloud is done
     while True:
         code, actual = call("GET", url_for(res))
-        if code != 404 and (actual or {}).get("properties", {}).get(
-                "provisioningState") == "Succeeded":
+        if code == 200 and actual["properties"].get("provisioningState") == "Succeeded":
             return
         time.sleep(2)
 
@@ -138,23 +131,31 @@ def refresh(state):
         state[key]["saved"] = now
     save_state(state)
 
-# ----------------------------------------------------------------------------
+# ---- races: two people, one state file -------------------------------------
 
 def main():
     global TOKEN
-    TOKEN = get_token()
     desired = yaml.safe_load(open("infra.yaml"))["resources"]
     verb = sys.argv[1] if len(sys.argv) > 1 else "plan"
-    state = load_state()
-    if verb == "refresh":
-        refresh(state)
-        return
-    if verb == "destroy":
-        desired = {}
-    creates, updates, deletes = diff(desired, state)
-    show(creates, updates, deletes)
-    if verb in ("up", "destroy"):
-        apply(desired, state, creates, updates, deletes)
+    try:  # O_EXCL is atomic — "check then create" would be a race of its own
+        lock = os.open(LOCK_FILE, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+    except FileExistsError:
+        raise SystemExit(f"state is locked by another run (rm {LOCK_FILE} if stale)")
+    os.write(lock, str(os.getpid()).encode())
+    try:
+        TOKEN = get_token()
+        state = load_state()
+        if verb == "refresh":
+            return refresh(state)
+        if verb == "destroy":
+            desired = {}
+        creates, updates, deletes = diff(desired, state)
+        show(creates, updates, deletes)
+        if verb in ("up", "destroy"):
+            apply(desired, state, creates, updates, deletes)
+    finally:
+        os.close(lock)
+        os.remove(LOCK_FILE)
 
 if __name__ == "__main__":
     main()
