@@ -1,14 +1,15 @@
-"""v4 — hard problem: dependency graphs (and eventual consistency, free).
+"""v5 — the cliff.
 
-A storage account has to be created *after* its resource group, and deleted
-*before* it. So the resources are a graph, and the engine walks it in
-topological order — parents first on the way up, children first on the way down.
+    python engine.py plan | up | destroy | refresh
 
-    python engine.py plan | up | destroy
+`refresh` asks the cloud what is ACTUALLY there. And that is where the
+uniform API stops helping. We PUT 4 fields at the storage account; the GET
+answers with 48. A naive diff would try to "fix" 44 fields it does not own —
+including ones it is not allowed to write.
 
-The storage account also answers 202 Accepted, not 200 OK: "working on it".
-Real clouds are eventually consistent, so the engine polls until the resource
-says provisioningState: Succeeded.
+The fix, for exactly one resource type, is OWNED below: per-property,
+per-resource-type knowledge. Multiply by ~2,000 ARM types, then by every
+cloud. The loop was 100 lines. The schemas are the millions.
 """
 import json, os, subprocess, sys, time, urllib.error, urllib.request
 import yaml  # the one import: infra.yaml -> dict, one line, not a pillar
@@ -72,13 +73,28 @@ def load_state():
 def save_state(state):
     json.dump(state, open(STATE_FILE, "w"), indent=2)
 
+# ---- the cliff: the API returns ~50 fields; we own a handful ---------------
+
+OWNED = {  # per resource type: the properties that are OURS to manage
+    "Microsoft.Resources/resourceGroups": ["location", "tags"],
+    "Microsoft.Storage/storageAccounts": ["location", "tags", "sku", "kind"],
+}
+
+def owned(res):  # our declared properties, minus anything not ours to manage
+    return {k: v for k, v in res["properties"].items() if k in OWNED[res["type"]]}
+
+def project(shape, actual):  # trim the cloud's answer to the shape we sent
+    if isinstance(shape, dict) and isinstance(actual, dict):
+        return {k: project(v, actual[k]) for k, v in shape.items() if k in actual}
+    return actual                       # (sku comes back with a tier we never sent)
+
 # ---- pillar 2: the diff — desired vs state ---------------------------------
 
 def diff(desired, state):
     creates = [k for k in desired if k not in state]
     deletes = [k for k in state if k not in desired]
     updates = [k for k in desired if k in state
-               and desired[k]["properties"] != state[k]["saved"]]
+               and owned(desired[k]) != state[k]["saved"]]
     return creates, updates, deletes
 
 def show(creates, updates, deletes):
@@ -103,8 +119,19 @@ def apply(desired, state, creates, updates, deletes):
             print(f"  {'+' if key in creates else '~'} {key}")
             call("PUT", url_for(res), res["properties"])
             wait_ready(res)
-            state[key] = {"res": res, "saved": res["properties"]}
+            state[key] = {"res": res, "saved": owned(res)}
             save_state(state)
+
+# ---- drift: ask the cloud what is ACTUALLY there ---------------------------
+
+def refresh(state):
+    for key in state:
+        res = state[key]["res"]
+        _, actual = call("GET", url_for(res))
+        print(f"  = {key}: cloud returned {len(actual)} top-level fields; "
+              f"we own {len(OWNED[res['type']])}")
+        state[key]["saved"] = project(owned(res), actual)
+    save_state(state)
 
 # ----------------------------------------------------------------------------
 
@@ -114,6 +141,9 @@ def main():
     desired = yaml.safe_load(open("infra.yaml"))["resources"]
     verb = sys.argv[1] if len(sys.argv) > 1 else "plan"
     state = load_state()
+    if verb == "refresh":
+        refresh(state)
+        return
     if verb == "destroy":
         desired = {}
     creates, updates, deletes = diff(desired, state)
