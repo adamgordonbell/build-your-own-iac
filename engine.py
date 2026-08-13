@@ -1,15 +1,16 @@
-"""v5 — the cliff.
+"""v6 — hard problem: drift. State vs reality, now done right.
 
     python engine.py plan | up | destroy | refresh
 
-`refresh` asks the cloud what is ACTUALLY there. And that is where the
-uniform API stops helping. We PUT 4 fields at the storage account; the GET
-answers with 48. A naive diff would try to "fix" 44 fields it does not own —
-including ones it is not allowed to write.
+Normalization (v5) is what makes drift detection possible at all: now that
+`refresh` can tell OUR fields from the cloud's, the answers it brings back
+mean something. Two kinds of drift, both handled here:
 
-The fix, for exactly one resource type, is OWNED below: per-property,
-per-resource-type knowledge. Multiply by ~2,000 ARM types, then by every
-cloud. The loop was 100 lines. The schemas are the millions.
+  changed — someone edited a tag in the portal; refresh sees it, plan says ~
+  vanished — someone deleted the resource; refresh forgets it, plan says +
+
+Without v5's OWNED, every refresh would report drift on 44 fields nobody
+touched, and the signal would be buried in the noise.
 """
 import json, os, subprocess, sys, time, urllib.error, urllib.request
 import yaml  # the one import: infra.yaml -> dict, one line, not a pillar
@@ -125,12 +126,16 @@ def apply(desired, state, creates, updates, deletes):
 # ---- drift: ask the cloud what is ACTUALLY there ---------------------------
 
 def refresh(state):
-    for key in state:
+    for key in list(state):
         res = state[key]["res"]
-        _, actual = call("GET", url_for(res))
-        print(f"  = {key}: cloud returned {len(actual)} top-level fields; "
-              f"we own {len(OWNED[res['type']])}")
-        state[key]["saved"] = project(owned(res), actual)
+        code, actual = call("GET", url_for(res))
+        if code == 404:                 # deleted behind our back: forget it,
+            print(f"  ! {key} vanished — deleted outside of us")
+            del state[key]              # and the next plan will offer to rebuild
+            continue
+        was, now = state[key]["saved"], project(owned(res), actual)
+        print(f"  {'~' if was != now else '='} {key}")
+        state[key]["saved"] = now
     save_state(state)
 
 # ----------------------------------------------------------------------------
