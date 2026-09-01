@@ -780,7 +780,7 @@ has not been watched live yet.
 9. **Storage-account name re-check, the week of the talk.** `az storage account
    check-name --name byoiacdemo2026`; if it's gone, see the rename drill in the
    setup section above.
-10. **Flip the GitHub repo public** before attendees are pointed at it.
+10. ~~Flip the GitHub repo public~~ **DONE 2026-09-01** — verified 200 logged-out; both `IV_4` QRs live.
 11. **Record the asciinema fallbacks** at rehearsal — the wifi-dies drill has
     nothing to fall back to until this is done.
 12. **Full live re-verification pass of every beat** under the folder layout.

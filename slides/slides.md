@@ -2657,5 +2657,5 @@ class: text-center
 
 <!--
 - → Leave this up through Q&A. Left QR = the repo (README walks every step); right QR = Pulumi author page (verified 200, 2026-09-01).
-- ▶ After stage: `destroy`, rm state files. ⚠️ Flip the repo public BEFORE the talk (rehearsal checklist) or the repo QR lands on a 404.
+- ▶ After stage: `destroy`, rm state files. Repo went public 2026-09-01 — both QRs verified live.
 -->
