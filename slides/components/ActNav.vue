@@ -56,10 +56,10 @@ const stateOf = (act) =>
 button {
   display: flex; align-items: baseline; gap: 0.3em;
   background: none; border: 1px solid transparent; border-radius: 5px;
-  padding: 1px 6px; cursor: pointer; color: #8a8a97; line-height: 1.5;
+  padding: 1px 6px; cursor: pointer; color: var(--dg-muted); line-height: 1.5;
   transition: opacity .2s, color .2s;
 }
-button:hover { border-color: #3a3a45; color: #d8d8e0; }
+button:hover { border-color: var(--dg-border); color: var(--dg-fg); }
 .num { font-weight: 700; }
 .sm button { font-size: 0.52rem; }
 .lg button { font-size: 0.95rem; padding: 3px 10px; }

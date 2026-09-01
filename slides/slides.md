@@ -7,7 +7,7 @@ info: |
   what happens to the script that puts it there. Every terminal output is a
   real transcript captured against Azure (2026-08-13, refreshed 2026-08-31).
 highlighter: shiki
-colorSchema: dark
+colorSchema: both
 
 mdc: true
 lineNumbers: false
@@ -602,49 +602,49 @@ routeAlias: II_3
 <svg viewBox="0 0 900 470" class="w-full block" style="max-width:none; margin-top:-0.5rem">
   <!-- PROGRAM -->
   <g>
-    <rect x="345" y="32" width="210" height="76" rx="10" fill="#1e2430" stroke="#3b82f6" stroke-width="2"/>
-    <text x="450" y="62" text-anchor="middle" fill="#e8e8ef" style="font-size:21px;font-weight:600">Program</text>
-    <text x="450" y="88" text-anchor="middle" fill="#9a9aa8" style="font-size:14px">what should exist — your names</text>
+    <rect x="345" y="32" width="210" height="76" rx="10" class="dgbx" stroke="#3b82f6" stroke-width="2"/>
+    <text x="450" y="62" text-anchor="middle" class="dgfg" style="font-size:21px;font-weight:600">Program</text>
+    <text x="450" y="88" text-anchor="middle" class="dgmu" style="font-size:14px">what should exist — your names</text>
   </g>
 
   <!-- CLOUD -->
   <g>
-    <rect x="645" y="312" width="210" height="76" rx="10" fill="#2a2318" stroke="#f59e0b" stroke-width="2"/>
-    <text x="750" y="342" text-anchor="middle" fill="#e8e8ef" style="font-size:21px;font-weight:600">Cloud</text>
-    <text x="750" y="368" text-anchor="middle" fill="#9a9aa8" style="font-size:14px">what actually exists — its IDs</text>
+    <rect x="645" y="312" width="210" height="76" rx="10" class="dgam" stroke="#f59e0b" stroke-width="2"/>
+    <text x="750" y="342" text-anchor="middle" class="dgfg" style="font-size:21px;font-weight:600">Cloud</text>
+    <text x="750" y="368" text-anchor="middle" class="dgmu" style="font-size:14px">what actually exists — its IDs</text>
   </g>
 
   <!-- 1. the question -->
   <g v-click="1">
-    <line x1="500" y1="110" x2="683" y2="310" stroke="#6b6b7d" stroke-width="2.5" stroke-dasharray="7 7"/>
-    <rect x="480" y="181" width="236" height="58" rx="8" fill="#121218" stroke="#2e2e38"/>
-    <text x="598" y="205" text-anchor="middle" fill="#e8e8ef" style="font-size:15px;font-weight:600">▲ which one is “files”?</text>
-    <text x="598" y="227" text-anchor="middle" fill="#9a9aa8" style="font-size:13px;font-style:italic">the cloud doesn't keep your mapping</text>
+    <line x1="500" y1="110" x2="683" y2="310" class="dgln" stroke-width="2.5" stroke-dasharray="7 7"/>
+    <rect x="480" y="181" width="236" height="58" rx="8" class="dgbx2 dgbd"/>
+    <text x="598" y="205" text-anchor="middle" class="dgfg" style="font-size:15px;font-weight:600">▲ which one is “files”?</text>
+    <text x="598" y="227" text-anchor="middle" class="dgmu" style="font-size:13px;font-style:italic">the cloud doesn't keep your mapping</text>
   </g>
 
   <!-- 2. state as the recorded mapping -->
   <g v-click="2">
-    <rect x="45" y="312" width="210" height="76" rx="10" fill="#1e2430" stroke="#3b82f6" stroke-width="2"/>
-    <text x="150" y="342" text-anchor="middle" fill="#e8e8ef" style="font-size:21px;font-weight:600">State</text>
-    <text x="150" y="368" text-anchor="middle" fill="#9a9aa8" style="font-size:14px">your name → the ID it gave back</text>
+    <rect x="45" y="312" width="210" height="76" rx="10" class="dgbx" stroke="#3b82f6" stroke-width="2"/>
+    <text x="150" y="342" text-anchor="middle" class="dgfg" style="font-size:21px;font-weight:600">State</text>
+    <text x="150" y="368" text-anchor="middle" class="dgmu" style="font-size:14px">your name → the ID it gave back</text>
     <line x1="400" y1="110" x2="217" y2="310" stroke="#3b82f6" stroke-width="2.5"/>
-    <rect x="201" y="181" width="212" height="58" rx="8" fill="#121218" stroke="#2e2e38"/>
-    <text x="307" y="205" text-anchor="middle" fill="#7dd3fc" style="font-size:15px;font-weight:600">■ you changed the code</text>
-    <text x="307" y="227" text-anchor="middle" fill="#9a9aa8" style="font-size:13px">expected</text>
+    <rect x="201" y="181" width="212" height="58" rx="8" class="dgbx2 dgbd"/>
+    <text x="307" y="205" text-anchor="middle" class="dgbb" style="font-size:15px;font-weight:600">■ you changed the code</text>
+    <text x="307" y="227" text-anchor="middle" class="dgmu" style="font-size:13px">expected</text>
   </g>
 
   <!-- 3. drift -->
   <g v-click="3">
     <line x1="257" y1="350" x2="643" y2="350" stroke="#f59e0b" stroke-width="2.5"/>
-    <rect x="344" y="321" width="212" height="58" rx="8" fill="#121218" stroke="#2e2e38"/>
-    <text x="450" y="345" text-anchor="middle" fill="#fbbf24" style="font-size:15px;font-weight:600">▲ someone else did</text>
-    <text x="450" y="367" text-anchor="middle" fill="#9a9aa8" style="font-size:13px">unexpected</text>
+    <rect x="344" y="321" width="212" height="58" rx="8" class="dgbx2 dgbd"/>
+    <text x="450" y="345" text-anchor="middle" class="dgab" style="font-size:15px;font-weight:600">▲ someone else did</text>
+    <text x="450" y="367" text-anchor="middle" class="dgmu" style="font-size:13px">unexpected</text>
   </g>
 
   <!-- 4. punchline -->
   <g v-click="4">
-    <text x="450" y="440" text-anchor="middle" fill="#e8e8ef" style="font-size:17px">The diff is only computable on top of this mapping.</text>
-    <text x="450" y="464" text-anchor="middle" fill="#9a9aa8" style="font-size:15px">State is memory of what you made — written down at create time.</text>
+    <text x="450" y="440" text-anchor="middle" class="dgfg" style="font-size:17px">The diff is only computable on top of this mapping.</text>
+    <text x="450" y="464" text-anchor="middle" class="dgmu" style="font-size:15px">State is memory of what you made — written down at create time.</text>
   </g>
 </svg>
 
@@ -1157,22 +1157,22 @@ routeAlias: II_10e
 <svg viewBox="0 0 900 210" class="w-full block" style="max-width:none; margin-top:1rem">
   <defs>
     <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 z" fill="#6b6b7d"/>
+      <path d="M0,0 L8,4 L0,8 z" class="dglnf"/>
     </marker>
   </defs>
   <g>
-    <rect x="40"  y="60" width="150" height="60" rx="9" fill="#1e2430" stroke="#3b82f6" stroke-width="2"/>
-    <text x="115" y="97" text-anchor="middle" fill="#e8e8ef" style="font-size:20px;font-weight:600">rg</text>
-    <rect x="270" y="60" width="150" height="60" rx="9" fill="#1e2430" stroke="#3b82f6" stroke-width="2"/>
-    <text x="345" y="97" text-anchor="middle" fill="#e8e8ef" style="font-size:20px;font-weight:600">storage</text>
-    <rect x="500" y="60" width="150" height="60" rx="9" fill="#1e2430" stroke="#3b82f6" stroke-width="2"/>
-    <text x="575" y="97" text-anchor="middle" fill="#e8e8ef" style="font-size:20px;font-weight:600">files</text>
-    <rect x="730" y="60" width="150" height="60" rx="9" fill="#1e2430" stroke="#3b82f6" stroke-width="2"/>
-    <text x="805" y="97" text-anchor="middle" fill="#e8e8ef" style="font-size:20px;font-weight:600">hello</text>
-    <line x1="270" y1="90" x2="196" y2="90" stroke="#6b6b7d" stroke-width="2.5" marker-end="url(#arr)"/>
-    <line x1="500" y1="90" x2="426" y2="90" stroke="#6b6b7d" stroke-width="2.5" marker-end="url(#arr)"/>
-    <line x1="730" y1="90" x2="656" y2="90" stroke="#6b6b7d" stroke-width="2.5" marker-end="url(#arr)"/>
-    <text x="450" y="35" text-anchor="middle" fill="#9a9aa8" style="font-size:15px;font-style:italic">→ means "needs"</text>
+    <rect x="40"  y="60" width="150" height="60" rx="9" class="dgbx" stroke="#3b82f6" stroke-width="2"/>
+    <text x="115" y="97" text-anchor="middle" class="dgfg" style="font-size:20px;font-weight:600">rg</text>
+    <rect x="270" y="60" width="150" height="60" rx="9" class="dgbx" stroke="#3b82f6" stroke-width="2"/>
+    <text x="345" y="97" text-anchor="middle" class="dgfg" style="font-size:20px;font-weight:600">storage</text>
+    <rect x="500" y="60" width="150" height="60" rx="9" class="dgbx" stroke="#3b82f6" stroke-width="2"/>
+    <text x="575" y="97" text-anchor="middle" class="dgfg" style="font-size:20px;font-weight:600">files</text>
+    <rect x="730" y="60" width="150" height="60" rx="9" class="dgbx" stroke="#3b82f6" stroke-width="2"/>
+    <text x="805" y="97" text-anchor="middle" class="dgfg" style="font-size:20px;font-weight:600">hello</text>
+    <line x1="270" y1="90" x2="196" y2="90" class="dgln" stroke-width="2.5" marker-end="url(#arr)"/>
+    <line x1="500" y1="90" x2="426" y2="90" class="dgln" stroke-width="2.5" marker-end="url(#arr)"/>
+    <line x1="730" y1="90" x2="656" y2="90" class="dgln" stroke-width="2.5" marker-end="url(#arr)"/>
+    <text x="450" y="35" text-anchor="middle" class="dgmu" style="font-size:15px;font-style:italic">→ means "needs"</text>
   </g>
 </svg>
 
@@ -2430,16 +2430,16 @@ layout: center
 
 <div class="text-sm mb-2 opacity-80">how complete it <b>feels</b></div>
 <div class="flex w-full h-12 rounded overflow-hidden text-sm font-bold">
-  <div class="flex items-center justify-center" style="width: 96%; background: #3b82f6;">■ state · diff · reconcile · graph</div>
-  <div class="flex items-center justify-center" style="width: 4%; background: #f59e0b;">▲</div>
+  <div class="flex items-center justify-center" style="width: 96%; background: #3b82f6; color:#fff;">■ state · diff · reconcile · graph</div>
+  <div class="flex items-center justify-center" style="width: 4%; background: #f59e0b; color:#fff;">▲</div>
 </div>
 
 <div v-click>
 
 <div class="text-sm mt-8 mb-2 opacity-80">how the <b>work</b> is actually distributed</div>
 <div class="flex w-full h-12 rounded overflow-hidden text-sm font-bold">
-  <div class="flex items-center justify-center" style="width: 4%; background: #3b82f6;">■</div>
-  <div class="flex items-center justify-center" style="width: 96%; background: #f59e0b;">▲ schemas × 2,000 types · replace rules · parallel applies · unknowns · retries · partial failure</div>
+  <div class="flex items-center justify-center" style="width: 4%; background: #3b82f6; color:#fff;">■</div>
+  <div class="flex items-center justify-center" style="width: 96%; background: #f59e0b; color:#fff;">▲ schemas × 2,000 types · replace rules · parallel applies · unknowns · retries · partial failure</div>
 </div>
 
 </div>

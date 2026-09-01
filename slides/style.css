@@ -15,3 +15,40 @@
 .bottom-0.left-0[class*="hover:opacity-100"]:hover {
   opacity: 1 !important;
 }
+
+/* ---- diagram palette: light/dark variables for inline SVGs ---------------
+   Code windows, terminals, and the IaCSandbox toy stay dark in BOTH modes
+   (shiki is pinned to vitesse-dark in setup/shiki.ts to match). These vars
+   only drive the inline SVG diagrams and the ActNav chips. */
+:root {
+  --dg-fg: #1c1c28;        /* diagram text */
+  --dg-muted: #5c5c6e;     /* secondary labels */
+  --dg-line: #7b7b90;      /* arrows / connectors */
+  --dg-box: #eef1f6;       /* node fill */
+  --dg-box2: #e4e7ee;      /* inner node fill */
+  --dg-amber-bg: #f7edd8;  /* amber-tinted node */
+  --dg-border: #c9cdd8;    /* subtle strokes */
+  --dg-blue-bright: #0369a1;
+  --dg-amber-bright: #b45309;
+}
+html.dark {
+  --dg-fg: #e8e8ef;
+  --dg-muted: #9a9aa8;
+  --dg-line: #6b6b7d;
+  --dg-box: #1e2430;
+  --dg-box2: #121218;
+  --dg-amber-bg: #2a2318;
+  --dg-border: #2e2e38;
+  --dg-blue-bright: #7dd3fc;
+  --dg-amber-bright: #fbbf24;
+}
+.dgfg  { fill: var(--dg-fg); }
+.dgmu  { fill: var(--dg-muted); }
+.dgbx  { fill: var(--dg-box); }
+.dgbx2 { fill: var(--dg-box2); }
+.dgam  { fill: var(--dg-amber-bg); }
+.dglnf { fill: var(--dg-line); }
+.dgbb  { fill: var(--dg-blue-bright); }
+.dgab  { fill: var(--dg-amber-bright); }
+.dgln  { stroke: var(--dg-line); }
+.dgbd  { stroke: var(--dg-border); }
