@@ -212,7 +212,7 @@ function reset() {
     <!-- the same triangle as the previous slide, made live -->
     <svg class="edges" viewBox="0 0 100 100" preserveAspectRatio="none">
       <line x1="40" y1="34" x2="24" y2="53" stroke="#3b82f6" stroke-width="0.4" />
-      <line x1="60" y1="34" x2="76" y2="53" stroke="#6b6b7d" stroke-width="0.4" stroke-dasharray="1.6 1.6" />
+      <line x1="60" y1="34" x2="76" y2="53" style="stroke:var(--dg-line)" stroke-width="0.4" stroke-dasharray="1.6 1.6" />
       <line x1="42" y1="80" x2="58" y2="80" stroke="#f59e0b" stroke-width="0.4" />
     </svg>
 
@@ -301,46 +301,46 @@ function reset() {
 .bar {
   position: absolute; left: 50%; top: 58%; transform: translate(-50%, -50%);
   z-index: 2; width: 104px; display: flex; flex-direction: column; align-items: stretch; gap: 0.25rem;
-  background: #121218; padding: 0.32rem 0.34rem; border-radius: 7px; border: 1px solid #2e2e38;
+  background: var(--w-panel); padding: 0.32rem 0.34rem; border-radius: 7px; border: 1px solid var(--dg-border);
 }
 .btns { display: flex; flex-direction: column; gap: 0.25rem; }
 .pane {
   position: relative; z-index: 1;
   border: 1px solid rgba(128,128,128,0.35); border-radius: 8px; overflow: hidden;
-  background: #1e1e24; transition: box-shadow .25s;
+  background: var(--w-body); transition: box-shadow .25s;
 }
 .pane.flash { box-shadow: 0 0 0 2px #3b82f6; }
 .pane-head {
-  padding: 5px 10px; background: #2d2d33; color: #e8e8ef;
+  padding: 5px 10px; background: var(--w-bar); color: var(--dg-fg);
   font-weight: 600; font-size: 0.72rem; display: flex; justify-content: space-between; align-items: baseline;
 }
-.pane-head span { color: #8a8a97; font-weight: 400; font-size: 0.62rem; }
+.pane-head span { color: var(--dg-muted); font-weight: 400; font-size: 0.62rem; }
 textarea {
   width: 100%; height: 96px; resize: none; border: 0; outline: none;
-  background: #1e1e24; color: #d8d8e0; padding: 8px 10px;
+  background: var(--w-body); color: var(--w-fg); padding: 8px 10px;
   font-family: inherit; font-size: inherit; line-height: 1.55;
 }
-.body { height: 134px; overflow-y: auto; padding: 8px 10px; color: #d8d8e0; line-height: 1.5; }
-.empty { color: #6b6b7d; font-style: italic; }
+.body { height: 134px; overflow-y: auto; padding: 8px 10px; color: var(--w-fg); line-height: 1.5; }
+.empty { color: var(--dg-line); font-style: italic; }
 .row { margin-bottom: 7px; }
 .rowtop { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-.arrow { color: #6b6b7d; }
+.arrow { color: var(--dg-line); }
 .id { color: #f59e0b; font-size: 0.58rem; white-space: nowrap; }
-.sub { color: #9a9aa8; padding-left: 2px; }
+.sub { color: var(--dg-muted); padding-left: 2px; }
 .sub input {
-  background: #26262e; border: 1px solid #3a3a45; border-radius: 3px;
-  color: #d8d8e0; font-family: inherit; font-size: inherit; width: 6.5rem; padding: 0 4px;
+  background: var(--w-input); border: 1px solid var(--w-border); border-radius: 3px;
+  color: var(--w-fg); font-family: inherit; font-size: inherit; width: 6.5rem; padding: 0 4px;
 }
 .portal {
-  background: none; border: 1px solid #3a3a45; border-radius: 4px; color: #8a8a97;
+  background: none; border: 1px solid var(--w-border); border-radius: 4px; color: var(--dg-muted);
   font-family: inherit; font-size: 0.6rem; padding: 1px 6px; cursor: pointer; font-weight: 400;
 }
 .portal:hover { color: #f59e0b; border-color: #f59e0b; }
 .chip {
   margin-left: 6px; padding: 0 5px; border-radius: 3px; font-size: 0.55rem;
-  color: #f59e0b; border: 1px solid #6b5320; background: #2a2318;
+  color: #f59e0b; border: 1px solid var(--w-amber-bd); background: var(--w-amber-bg);
 }
-.x { color: #8a8a97; background: none; border: 0; cursor: pointer; padding: 0 2px; line-height: 1; }
+.x { color: var(--dg-muted); background: none; border: 0; cursor: pointer; padding: 0 2px; line-height: 1; }
 .x:hover { color: #f59e0b; }
 button.go {
   background: #3b82f6; color: #fff; border: 0; border-radius: 5px;
@@ -348,7 +348,7 @@ button.go {
 }
 button.go:hover { filter: brightness(1.12); }
 button.ghost {
-  background: none; color: #8a8a97; border: 1px solid #3a3a45; border-radius: 5px;
+  background: none; color: var(--dg-muted); border: 1px solid var(--w-border); border-radius: 5px;
   padding: 1px 8px; font-family: inherit; font-size: 0.56rem; cursor: pointer;
 }
 .planout {
@@ -359,14 +359,14 @@ button.ghost {
   border: 1px solid transparent;               /* reserved, invisible until it has something to say */
   transition: box-shadow .25s;
 }
-.planout.filled { border-color: rgba(128,128,128,0.28); background: #1a1a20; }
+.planout.filled { border-color: rgba(128,128,128,0.28); background: var(--w-soft); }
 .planout.flash { box-shadow: 0 0 0 2px #3b82f6; }
-.planlab { color: #8a8a97; }
-.planempty { color: #6b6b7d; font-style: italic; }
+.planlab { color: var(--dg-muted); }
+.planempty { color: var(--dg-line); font-style: italic; }
 .pitem b { font-size: 0.8rem; }
 .pitem.create, .pitem.update { color: #3b82f6; }
 .pitem.delete { color: #f59e0b; }
-.pitem.skip { color: #8a8a97; }
+.pitem.skip { color: var(--dg-muted); }
 .pitem.noidea { color: #f59e0b; }
-.log { color: #e8e8ef; min-height: 1em; text-align: center; font-size: 0.52rem; line-height: 1.35; word-break: break-word; }
+.log { color: var(--dg-fg); min-height: 1em; text-align: center; font-size: 0.52rem; line-height: 1.35; word-break: break-word; }
 </style>

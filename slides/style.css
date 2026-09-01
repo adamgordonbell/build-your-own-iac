@@ -17,9 +17,8 @@
 }
 
 /* ---- diagram palette: light/dark variables for inline SVGs ---------------
-   Code windows, terminals, and the IaCSandbox toy stay dark in BOTH modes
-   (shiki is pinned to vitesse-dark in setup/shiki.ts to match). These vars
-   only drive the inline SVG diagrams and the ActNav chips. */
+   Everything switches with the scheme: diagrams (dg-*), window chrome and
+   the IaCSandbox toy (w-*), and shiki (vitesse-light / vitesse-dark). */
 :root {
   --dg-fg: #1c1c28;        /* diagram text */
   --dg-muted: #5c5c6e;     /* secondary labels */
@@ -52,3 +51,28 @@ html.dark {
 .dgab  { fill: var(--dg-amber-bright); }
 .dgln  { stroke: var(--dg-line); }
 .dgbd  { stroke: var(--dg-border); }
+
+:root {
+  --w-bar: #e7e7ec;
+  --w-body: #fdfdfe;
+  --w-title: #6a6a76;
+  --w-fg: #2a2a35;
+  --w-border: #c9cdd8;
+  --w-panel: #eceef4;
+  --w-input: #f0f0f4;
+  --w-soft: #f2f3f7;
+  --w-amber-bg: #f7edd8;
+  --w-amber-bd: #d9a944;
+}
+html.dark {
+  --w-bar: #2d2d33;
+  --w-body: #1e1e24;
+  --w-title: #9a9aa5;
+  --w-fg: #d8d8e0;
+  --w-border: #3a3a45;
+  --w-panel: #121218;
+  --w-input: #26262e;
+  --w-soft: #1a1a20;
+  --w-amber-bg: #2a2318;
+  --w-amber-bd: #6b5320;
+}

@@ -30,7 +30,7 @@ defineProps({
   align-items: center;
   gap: 6px;
   padding: 7px 12px;
-  background: #2d2d33;
+  background: var(--w-bar);
 }
 .dot { width: 11px; height: 11px; border-radius: 50%; background: #5a5a63; }
 .dot:nth-child(1) { background: #e0655a; }
@@ -39,16 +39,16 @@ defineProps({
 .win-title {
   margin-left: 10px;
   font-size: 0.7rem;
-  color: #9a9aa5;
+  color: var(--w-title);
   font-family: ui-monospace, monospace;
 }
-.win-body { background: #1e1e24; }
+.win-body { background: var(--w-body); }
 .win.terminal .win-body {
   padding: 10px 14px;
   font-family: ui-monospace, monospace;
   font-size: 0.78rem;
   line-height: 1.45;
-  color: #d8d8e0;
+  color: var(--w-fg);
   min-height: 2rem;
 }
 /* let slidev's code blocks sit flush inside the editor window */
