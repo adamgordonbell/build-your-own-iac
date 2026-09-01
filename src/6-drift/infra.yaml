@@ -1,0 +1,43 @@
+# Your infrastructure, as data. Shaped like Pulumi YAML on purpose —
+# the closing slide is a diff against the real thing.
+resources:
+  rg:
+    type: Microsoft.Resources/resourceGroups
+    name: byoiac-demo
+    properties:
+      location: eastus
+      tags: {env: demo, talk: kcdc}
+
+  storage:
+    type: Microsoft.Storage/storageAccounts
+    name: byoiacdemo2026        # globally unique, 3-24 lowercase alnum
+    resourceGroup: byoiac-demo
+    dependsOn: [rg]             # Pulumi infers this from ${rg.name} — we can't
+    properties:
+      location: eastus
+      sku: {name: Standard_LRS}
+      kind: StorageV2
+      tags: {env: demo}
+      properties: {allowBlobPublicAccess: true}   # a public file needs the account's OK
+
+  files:
+    type: Microsoft.Storage/storageAccounts/blobServices/containers
+    name: files
+    resourceGroup: byoiac-demo
+    storageAccount: byoiacdemo2026
+    dependsOn: [storage]
+    properties:
+      properties: {publicAccess: Blob}   # ARM nests container settings one level down
+
+  hello:
+    type: blob                  # not an ARM type: files live on the data plane
+    name: hello.html
+    resourceGroup: byoiac-demo
+    storageAccount: byoiacdemo2026
+    container: files
+    dependsOn: [files]
+    properties:
+      contentType: text/html
+      content: |
+        <h1>Deployed by ~165 lines of Python</h1>
+        <p>KCDC 2026 - Build Your Own IaC</p>

@@ -1,0 +1,42 @@
+# The TIDIED file — same four wishes as infra.yaml, reordered. hello.html is
+# the star of the file, so someone moved it to the top. Why not? The file is a
+# picture, not a recipe. But the engine grants wishes in FILE order, so with
+# this file `up` crashes on the very first wish (repro steps in demo.md).
+resources:
+  hello:
+    type: blob                  # not an ARM type: files live on the data plane
+    name: hello.html
+    resourceGroup: byoiac-demo
+    storageAccount: byoiacdemo2026
+    container: files
+    properties:
+      contentType: text/html
+      content: |
+        <h1>Deployed by ~165 lines of Python</h1>
+        <p>KCDC 2026 - Build Your Own IaC</p>
+
+  rg:
+    type: Microsoft.Resources/resourceGroups
+    name: byoiac-demo
+    properties:
+      location: eastus
+      tags: {env: demo, talk: kcdc}
+
+  storage:
+    type: Microsoft.Storage/storageAccounts
+    name: byoiacdemo2026        # globally unique, 3-24 lowercase alnum
+    resourceGroup: byoiac-demo
+    properties:
+      location: eastus
+      sku: {name: Standard_LRS}
+      kind: StorageV2
+      tags: {env: demo}
+      properties: {allowBlobPublicAccess: true}   # a public file needs the account's OK
+
+  files:
+    type: Microsoft.Storage/storageAccounts/blobServices/containers
+    name: files
+    resourceGroup: byoiac-demo
+    storageAccount: byoiacdemo2026
+    properties:
+      properties: {publicAccess: Blob}   # ARM nests container settings one level down

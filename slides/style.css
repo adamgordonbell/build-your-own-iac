@@ -1,0 +1,17 @@
+/* Slidev's dev-mode goto/overview dialog renders stuck-open in this version
+   and covers the top-right of every slide — hide it. (Costs the `g` goto UI;
+   arrow keys / slide numbers in the URL still navigate.) */
+#slidev-goto-dialog {
+  display: none !important;
+}
+
+/* The nav toolbar auto-hides at the bottom-left, exactly where the auto-hiding
+   macOS Dock strikes — mousing at it summons the Dock over it. Pin it visible
+   (dimmed until hover) and float it above the Dock's trigger zone. */
+.bottom-0.left-0[class*="hover:opacity-100"] {
+  opacity: 0.35 !important;
+  bottom: 4.5rem !important;
+}
+.bottom-0.left-0[class*="hover:opacity-100"]:hover {
+  opacity: 1 !important;
+}
