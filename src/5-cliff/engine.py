@@ -1,15 +1,12 @@
-"""v5 — the cliff.
+"""v5: refresh, and the schema problem.
+
+Step 5 adds refresh, which reads each resource back from the cloud. That
+exposes the gap: we PUT 4 fields for the storage account and the GET returns
+48. The OWNED table below lists, per resource type, the properties this tool
+manages, so the diff ignores the rest. It covers the handful of types in
+infra.yaml only; a real tool needs this for every type on every cloud.
 
     python engine.py plan | up | destroy | refresh
-
-`refresh` asks the cloud what is ACTUALLY there. And that is where the
-uniform API stops helping. We PUT 4 fields at the storage account; the GET
-answers with 48. A naive diff would try to "fix" 44 fields it does not own —
-including ones it is not allowed to write.
-
-The fix, for exactly one resource type, is OWNED below: per-property,
-per-resource-type knowledge. Multiply by ~2,000 ARM types, then by every
-cloud. The loop was 100 lines. The schemas are the millions.
 """
 import json, os, subprocess, sys, time, urllib.error, urllib.request
 import yaml  # the one import: infra.yaml -> dict, one line, not a pillar

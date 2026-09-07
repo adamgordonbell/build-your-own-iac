@@ -5,11 +5,14 @@
   "scripts": {
     "dev": "slidev slides.md",
     "build": "slidev build slides.md",
-    "export": "slidev export slides.md"
+    "export": "slidev export slides.md --per-slide --output build-your-own-iac-kcdc-2026.pdf"
   },
   "dependencies": {
     "@slidev/cli": "^0.50.0",
     "@slidev/theme-default": "latest",
     "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "playwright-chromium": "^1.63.0"
   }
 }

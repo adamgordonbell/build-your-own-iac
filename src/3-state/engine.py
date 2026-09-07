@@ -1,18 +1,13 @@
-"""v3 — the three pillars. A working IaC tool.
+"""v3: state, diff, reconcile. A working IaC tool.
 
-Everything the script knew — every URL shape from deploy.py, the SAS dance
-for the blob, even the 20-second shrug after the storage account — wrapped
-in the three pillars: State (what we THINK exists), the Diff (desired vs
-state), and Reconciliation (make the diff true).
+Step 3 wraps the URL shapes and the blob SAS call from deploy.py in three
+parts: state (what we think exists), a diff (desired vs state), and a loop
+that applies the diff. Unlike the script it can run twice, update in place,
+and tear down. It does not know about ordering: resources are created in
+file order and deleted in reverse. infra-tidied.yaml is the same file with
+hello.html moved first; swap it in and up fails on the first resource.
 
     python engine.py plan | up | destroy
-
-It deploys the same page the script did, and it can also run twice, update
-in place, and take things away. One thing it does NOT know: order. Wishes
-are granted in FILE order (teardown: the same list, backwards) — nobody
-chose that; the file just happens to be written parents-first. And
-infra-tidied.yaml is that file reordered, hello.html moved to the top:
-swap it in and `up` dies on the first wish. That's why ../4-graph exists.
 """
 import json, os, subprocess, sys, time, urllib.error, urllib.request
 import yaml  # the one import: infra.yaml -> dict, one line, not a pillar

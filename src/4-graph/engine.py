@@ -1,18 +1,12 @@
-"""v4 — hard problem: dependency graphs (and eventual consistency, free).
+"""v4: dependency graphs and eventual consistency.
 
-A storage account has to be created *after* its resource group, and deleted
-*before* it. So the resources are a graph, and the engine walks it in
-topological order — parents first on the way up, children first on the way down.
+Step 4 adds dependsOn to the file and a short topological sort, so the engine
+creates parents first and deletes children first. It also polls (wait_ready)
+until the storage account reports provisioningState Succeeded, replacing the
+fixed sleep from v3. It still trusts state completely and never asks the
+cloud what is really there.
 
     python engine.py plan | up | destroy
-
-The storage account also answers 202 Accepted, not 200 OK: "working on it".
-Real clouds are eventually consistent, so the engine polls (wait_ready) until
-the resource says provisioningState: Succeeded — that poll is what ../3-state's
-20-second shrug grows up into.
-
-diff ../3-state/engine.py engine.py is the whole lesson: dependsOn in the file,
-eleven lines of topological sort, and the poller. Nothing else changed.
 """
 import json, os, subprocess, sys, time, urllib.error, urllib.request
 import yaml  # the one import: infra.yaml -> dict, one line, not a pillar

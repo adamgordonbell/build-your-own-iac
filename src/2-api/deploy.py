@@ -1,14 +1,11 @@
-"""The script you write instead of clicking the portal.
+"""Step 2: the script, as raw REST.
 
-I have a web page. It needs to be on the internet. I could click through the
-Azure portal for ten minutes — but I'm smarter than that, so I script it.
-Every `az` command is one HTTP request, so here they are, in order, with no
-SDK and no framework: a bearer token and four PUTs.
+The five az commands from step 1, done as plain HTTP: one bearer token from
+the Azure CLI and four PUTs, no SDK and no framework. It deploys a real public
+web page. It cannot tell when nothing has changed and it cannot delete anything.
 
     export AZURE_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
     python deploy.py
-
-Run it, the page is live. So why does anybody need Terraform?
 """
 import json, os, subprocess, time, urllib.request
 

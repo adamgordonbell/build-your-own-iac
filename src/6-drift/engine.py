@@ -1,18 +1,12 @@
-"""v6 — hard problem: drift. State vs reality, now done right.
+"""v6: drift detection and a lockfile.
+
+Step 6 uses v5's refresh and OWNED table to detect drift. If someone edits a
+tag in the portal, refresh records it and plan shows an update. If someone
+deletes a resource, refresh drops it from state and plan shows a create.
+main() also takes a lockfile so two people cannot run against one state
+file at once. There is no remote state and no import of existing resources.
 
     python engine.py plan | up | destroy | refresh
-
-Normalization (v5) is what makes drift detection possible at all: now that
-`refresh` can tell OUR fields from the cloud's, the answers it brings back
-mean something. Two kinds of drift, both handled here:
-
-  changed — someone edited a tag in the portal; refresh sees it, plan says ~
-  vanished — someone deleted the resource; refresh forgets it, plan says +
-
-Without v5's OWNED, every refresh would report drift on 44 fields nobody
-touched, and the signal would be buried in the noise.
-
-Also here: a lockfile (~5 lines in main) — two people, one state file.
 """
 import json, os, subprocess, sys, time, urllib.error, urllib.request
 import yaml  # the one import: infra.yaml -> dict, one line, not a pillar
