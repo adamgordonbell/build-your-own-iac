@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """v6: drift detection and a lockfile.
 
 Step 6 uses v5's refresh and OWNED table to detect drift. If someone edits a

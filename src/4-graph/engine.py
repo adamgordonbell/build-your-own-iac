@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """v4: dependency graphs and eventual consistency.
 
 Step 4 adds dependsOn to the file and a short topological sort, so the engine

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """v5: refresh, and the schema problem.
 
 Step 5 adds refresh, which reads each resource back from the cloud. That

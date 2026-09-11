@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """v3: state, diff, reconcile. A working IaC tool.
 
 Step 3 wraps the URL shapes and the blob SAS call from deploy.py in three

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Step 2: the script, as raw REST.
 
 The five az commands from step 1, done as plain HTTP: one bearer token from
