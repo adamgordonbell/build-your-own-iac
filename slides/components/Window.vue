@@ -1,8 +1,37 @@
 <script setup>
-defineProps({
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+
+const props = defineProps({
   title: { type: String, default: '' },
   kind: { type: String, default: 'editor' }, // 'editor' | 'terminal'
+  // when set, the body becomes a scroll box that follows the clicks — the
+  // transcript grows past the slide and we ride it down, like a real terminal
+  maxHeight: { type: String, default: '' },
 })
+
+const body = ref(null)
+let obs = null
+
+// v-click keeps hidden blocks in the layout at opacity 0, so "the bottom" is
+// the last block that is NOT hidden, not the true scrollHeight.
+function follow() {
+  const el = body.value
+  if (!el) return
+  const shown = el.querySelectorAll('.slidev-vclick-target:not(.slidev-vclick-hidden)')
+  const last = shown[shown.length - 1]
+  if (!last) { el.scrollTop = 0; return }
+  const top = last.offsetTop + last.offsetHeight - el.clientHeight
+  // don't nudge by a few pixels and clip the first line — snap to the top instead
+  el.scrollTo({ top: top < 24 ? 0 : top, behavior: 'smooth' })
+}
+
+onMounted(() => {
+  if (!body.value || !props.maxHeight) return   // only scroll boxes need the observer
+  obs = new MutationObserver(() => nextTick(follow))
+  obs.observe(body.value, { subtree: true, attributes: true, attributeFilter: ['class'] })
+  nextTick(follow)
+})
+onBeforeUnmount(() => obs && obs.disconnect())
 </script>
 
 <template>
@@ -11,7 +40,12 @@ defineProps({
       <span class="dot" /><span class="dot" /><span class="dot" />
       <span class="win-title">{{ title }}</span>
     </div>
-    <div class="win-body">
+    <div
+      ref="body"
+      class="win-body"
+      :class="{ 'win-scroll': maxHeight }"
+      :style="maxHeight ? { maxHeight } : null"
+    >
       <slot />
     </div>
   </div>
@@ -64,4 +98,18 @@ defineProps({
 }
 .win.terminal .win-body :deep(.slidev-code-line-numbers),
 .win.terminal .win-body :deep(.line-number) { display: none; }
+
+/* scroll box: the transcript is taller than the slide and the clicks walk it */
+.win-body.win-scroll {
+  overflow-y: auto;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128, 128, 128, 0.35) transparent;
+}
+.win-body.win-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.win-body.win-scroll::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.35);
+  border-radius: 3px;
+}
+.win-body.win-scroll::-webkit-scrollbar-track { background: transparent; }
 </style>

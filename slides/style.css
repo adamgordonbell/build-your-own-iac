@@ -76,3 +76,7 @@ html.dark {
   --w-amber-bg: #2a2318;
   --w-amber-bd: #6b5320;
 }
+
+/* text tints matching the diagram palette (used by the graph-walk slides) */
+.dgab-t { color: var(--dg-amber-bright); }
+.dgbb-t { color: var(--dg-blue-bright); }
