@@ -20,7 +20,7 @@ class: title-cover
 
 <style>
 .slidev-layout.title-cover { color: #f4f6fb !important; }
-.slidev-layout.title-cover::before { content:''; position:absolute; inset:0; background:linear-gradient(90deg, rgba(7,10,15,0.72) 0%, rgba(7,10,15,0.36) 45%, rgba(7,10,15,0) 72%); pointer-events:none; z-index:0; }
+.slidev-layout.title-cover::before { content:''; position:absolute; inset:0; background:linear-gradient(90deg, rgba(12,17,26,0.5) 0%, rgba(12,17,26,0.2) 45%, rgba(12,17,26,0) 70%); pointer-events:none; z-index:0; }
 .slidev-layout.title-cover h1 { position:relative; z-index:1; color:#ffffff !important; font-weight:700; -webkit-text-fill-color:#ffffff; }
 .slidev-layout.title-cover h2 { position:relative; z-index:1; color:#cdd7ea !important; font-weight:400; -webkit-text-fill-color:#cdd7ea; }
 </style>

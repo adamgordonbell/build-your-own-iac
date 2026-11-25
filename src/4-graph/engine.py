@@ -155,6 +155,11 @@ def main():
     show(creates, updates, deletes)
     if verb in ("up", "destroy"):
         apply(desired, state, creates, updates, deletes)
+    if verb == "up":
+        for res in desired.values():
+            if res.get("type") == "blob":
+                print(f"\nyour page: https://{res['storageAccount']}"
+                      f".blob.core.windows.net/{res['container']}/{res['name']}")
 
 if __name__ == "__main__":
     main()
